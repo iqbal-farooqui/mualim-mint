@@ -10,7 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_05_173006) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_08_024013) do
+  create_table "instructors", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_instructors_on_user_id"
+  end
+
+  create_table "locations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.decimal "amount"
+    t.string "payment_type"
+    t.date "month"
+    t.integer "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_payments_on_student_id"
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "level"
+    t.integer "location_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_students_on_location_id"
+    t.index ["user_id"], name: "index_students_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -19,8 +52,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_173006) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "instructors", "users"
+  add_foreign_key "payments", "students"
+  add_foreign_key "students", "locations"
+  add_foreign_key "students", "users"
 end
